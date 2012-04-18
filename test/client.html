@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="-1" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>Client Test</title>
+		<style type="text/css">
+#controls {
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 0.5em;
+  display: block;
+}
+
+#message {width: 60%;}
+
+#log {
+  font-family: helvetica, arial, sans-serif;
+  font-size: .8em;
+  padding-bottom: 40px;
+}
+		</style>
+		<script >
+
+var conn;
+
+function $id(id){
+  return document.getElementById(id);
+}
+function scrollToBottom() {
+    window.scrollBy(0, document.body.scrollHeight - document.body.scrollTop);
+}
+
+function init(){
+    var history = [], idx = 0;
+    var logpanel = $id("log");
+
+  function sendmsg(){
+    if(conn && conn.readyState == 1){
+      var msg = $id("message").value;
+      history.unshift(msg);
+      conn.send(msg);
+      idx = 0;
+      $id("message").value="";
+    }
+  };
+
+  $id("sendbtn").addEventListener("click", function(){
+    sendmsg();
+  });
+  $id("closebtn").addEventListener("click", function(){
+    conn.close();
+  });
+
+  $id("message").addEventListener("keydown", function(e){
+    if(e.which == 13){
+      sendmsg();
+    }
+  })
+
+
+
+  function log(data){
+    console.log(data)
+    var p=document.createElement("p");
+    p.innerHTML=data;
+    logpanel.appendChild(p);
+    scrollToBottom();
+  };
+
+var port= $id("port").value;
+
+  if (window["WebSocket"]) {
+    var host=document.location.hostname||"localhost";
+    conn = new WebSocket("ws://"+host+":"+ port +"/");
+
+    conn.onmessage = function(evt) {
+      log(evt.data);
+    };
+
+    conn.onclose = function() {
+      log("** you have been disconnected");
+    };
+
+    conn.onopen = function(){
+      log("** you have been connected");
+    }
+     conn.onerror = function(){
+      log("** you have error");
+    }
+  }
+}
+window.onload=function(){
+  init();
+}
+
+    </script>
+  </head>
+  <body>
+    <div id="config"><input type="text" id="port" value="8088"></div>
+		    <div id="controls">
+      <input type="text" value="test message" id="message"/>
+      <input type="button" value="send" id="sendbtn" >
+      <input type="button" value="close" id="closebtn" >
+      <hr />
+    </div>
+    <div id="log"></div>
+
+  </body>
+</html>
