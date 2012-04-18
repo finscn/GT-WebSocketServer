@@ -1,5 +1,5 @@
 
-var Server = require('./lib/Server');
+var Server = require('../lib/Server');
 
 var _port=process.argv[2]||8088;
 
