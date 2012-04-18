@@ -58,6 +58,11 @@ function init(){
   $id("sendbtn").addEventListener("click", function(){
     sendmsg();
   });
+
+  $id("batchbtn").addEventListener("click", function(){
+    batchSend();
+  });
+
   $id("closebtn").addEventListener("click", function(){
     conn.close();
   });
@@ -104,6 +109,27 @@ window.onload=function(){
   init();
 }
 
+function batchSend(num){
+  num=num||1000;
+  var count=0;
+
+  var str="" ,len=100;
+  while(len>0){
+    str+="m";
+    len--;
+  }
+
+  function sendMsg(){
+      conn.send("-= MSG("+count+") =- "+str+" "+Date.now());
+      count++;
+      if (count<num){
+        setTimeout(sendMsg , 0)
+      }
+  }
+  sendMsg();
+
+}
+
     </script>
   </head>
   <body>
@@ -111,6 +137,7 @@ window.onload=function(){
 		    <div id="controls">
       <input type="text" value="test message" id="message"/>
       <input type="button" value="send" id="sendbtn" >
+      <input type="button" value="batchSend" id="batchbtn" >
       <input type="button" value="close" id="closebtn" >
       <hr />
     </div>
