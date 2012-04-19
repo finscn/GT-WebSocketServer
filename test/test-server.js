@@ -13,7 +13,7 @@ server.on("connection", function(conn){
 	
 	console.log("Connection: "+conn.id+" ver:"+conn.version);
 
-	conn.on("message",function(message){
+	conn.on("message", function(message){
 		console.log("message from "+conn.id+" : "+message)
 		server.broadcast(message);
 	});
@@ -21,6 +21,10 @@ server.on("connection", function(conn){
 	conn.on("close", function(conn){
 		console.log("close : "+conn.id);
 		server.broadcast(conn.id+" has closed.");
+	});
+
+	conn.on("error", function(reason){
+		console.log("error : "+conn.id+" "+reason);
 	});
 
 });
