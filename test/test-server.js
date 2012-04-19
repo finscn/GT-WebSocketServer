@@ -23,8 +23,8 @@ server.on("connection", function(conn){
 		server.broadcast(conn.id+" has closed.");
 	});
 
-	conn.on("error", function(reason){
-		console.log("error : "+conn.id+" "+reason);
+	conn.on("error", function(e ){
+		console.log("error : "+conn.id+" "+e);
 	});
 
 });
